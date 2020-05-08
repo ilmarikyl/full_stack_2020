@@ -1,0 +1,16 @@
+note over selain:
+Käyttäjä kirjoittaa muistiinpanon
+ja painaa "save"-painiketta
+end note
+
+selain->palvelin: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa
+
+note over palvelin:
+Palvelin tallentaa muistiinpanon
+end note
+
+note over selain:
+Sivua ei ladata uudestaan,
+vaan js-skripti piirtää
+luodun muistiinpanon ruudulle
+end note
