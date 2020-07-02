@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "Ploki",
-    "author": "Timo",
-    "url": "ps.fi",
-    "likes": 3
+    "title": "Plogi",
+    "author": "Tino",
+    "url": "ps.com",
+    "likes": 100
 }
