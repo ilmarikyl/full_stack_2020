@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: bearer <INSERT TOKEN>
 
 {
-    "title": "Plogi",
-    "author": "Tino",
-    "url": "ps.com",
-    "likes": 100
+    "title": "New Blog",
+    "author": "Blogger",
+    "url": "https://blogs.com",
+    "likes": 12
 }

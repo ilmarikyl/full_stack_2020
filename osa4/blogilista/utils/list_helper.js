@@ -43,16 +43,16 @@ const mostLikes  = (blogs) => {
 	return blogs.length === 0
 		? 'Blog list is empty'
 		: blogs
-			.reduce(({sums, most}, {likes, author}) => {
+			.reduce(({ sums, most }, { likes, author }) => {
 				sums[author] = likes = (sums[author] || 0) + likes
 				if (likes > most.likes)  {
-					most = {author, likes}
+					most = { author, likes }
 				}
-				return {sums, most}
-			}, {sums: {}, most: {likes: 0} })
+				return { sums, most }
+			}, { sums: {}, most: { likes: 0 } })
 			.most
 }
-  
+
 module.exports = {
 	dummy, totalLikes, favouriteBlog, mostBlogs, mostLikes
 }

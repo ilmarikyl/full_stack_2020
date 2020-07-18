@@ -1,5 +1,5 @@
 
-
+const mongoose = require('mongoose')
 const listHelper = require('../utils/list_helper')
 
 
@@ -68,16 +68,16 @@ const listWithManyBlogs = [
 		url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
 		likes: 2,
 		__v: 0
-	}  
+	}
 ]
 
 
 describe('total likes', () => {
-	
+
 	test('of empty list is zero', () => {
 		expect(listHelper.totalLikes([])).toBe(0)
 	})
-  
+
 	test('when list has only one blog equals the likes of that', () => {
 		expect(listHelper.totalLikes(listWithOneBlog)).toBe(6)
 	})
@@ -162,4 +162,8 @@ describe('most likes', () => {
 	test('when list is empty', () => {
 		expect(listHelper.mostLikes([])).toBe('Blog list is empty')
 	})
+})
+
+afterAll(async () => {
+	mongoose.connection.close()
 })
