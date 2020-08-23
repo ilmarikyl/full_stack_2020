@@ -1,11 +1,12 @@
-/* eslint-disable no-trailing-spaces */
-/* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import BlogForm from './components/newBlogForm'
+import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+
 
 const App = () => {
 	const [blogs, setBlogs] = useState([])
@@ -14,14 +15,17 @@ const App = () => {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
 	const [user, setUser] = useState(null)
+	const blogFormRef = useRef()
+
 
 	useEffect(() => {
 		const getBlogs = async () => {
 			const returnedBlogs = await blogService.getAll()
-			setBlogs( returnedBlogs )
+			setBlogs(sortByLikes(returnedBlogs))
 		}
 		getBlogs()
 	}, [])
+
 
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -33,6 +37,11 @@ const App = () => {
 	}, [])
 
 
+	const sortByLikes = (blogs) => (
+		blogs.sort((a, b) =>  b.likes - a.likes)
+	)
+
+
 	const CreateNotification = (message, status, length) => {
 		setNotificationMessage(message)
 		setNotificationStatus(status)
@@ -42,29 +51,14 @@ const App = () => {
 	}
 
 
-	const loginForm = () => (
-		<form onSubmit={handleLogin}>
-			<div>
-			username
-				<input
-					type="text"
-					value={username}
-					name="Username"
-					onChange={({ target }) => setUsername(target.value)}
-				/>
-			</div>
-			<div>
-			password
-				<input
-					type="password"
-					value={password}
-					name="Password"
-					onChange={({ target }) => setPassword(target.value)}
-				/>
-			</div>
-			<button type="submit">login</button>
-		</form>
-	)
+	const handleUsernameChange = (event) => {
+		setUsername(event.target.value)
+	}
+
+
+	const handlePasswordChange = (event) => {
+		setPassword(event.target.value)
+	}
 
 
 	const handleLogin = async (event) => {
@@ -81,30 +75,13 @@ const App = () => {
 			setUser(user)
 			setUsername('')
 			setPassword('')
-			CreateNotification('Login successful', true, 3000)
+			CreateNotification('Logged in successfully!', true, 3000)
 		} catch (exception) {
 			CreateNotification('Invalid username or password', false, 3000)
 		}
 	}
 
 
-	const addBlog = async (blogToBeAdded) => {
-		try {
-			const blogObject = {
-				title: blogToBeAdded.title,
-				author: blogToBeAdded.author,
-				url: blogToBeAdded.url
-			}
-
-			const returnedBlog = await blogService.create(blogObject)
-			setBlogs(blogs.concat(returnedBlog))
-			CreateNotification(`Blog '${blogToBeAdded.title}' added succesfully!`, true, 3000)
-		} catch (error) {
-			CreateNotification('Something went wrong and the blog was not added', false, 3000)
-		}
-	}
-
-	
 	const handleLogout = async (event) => {
 		event.preventDefault()
 		setUser(null)
@@ -113,23 +90,70 @@ const App = () => {
 	}
 
 
+	const handleBlogAdd = async (blogToBeAdded) => {
+		try {
+			blogFormRef.current.toggleVisibility()
+			const blogObject = {
+				title: blogToBeAdded.title,
+				author: blogToBeAdded.author,
+				url: blogToBeAdded.url
+			}
+			const returnedBlog = await blogService.create(blogObject)
+			setBlogs(blogs.concat(returnedBlog))
+			CreateNotification(`Blog '${blogToBeAdded.title}' added successfully!`, true, 3000)
+		} catch (error) {
+			CreateNotification('Something went wrong and the blog was not added', false, 3000)
+		}
+	}
+
+
+	const handleBlogDelete = async (blog) => {
+		if (window.confirm(`Remove blog '${blog.title}' by ${blog.author}?`)) {
+			await blogService.remove(blog)
+			CreateNotification(`Deleted blog '${blog.title}'`, true, 3000)
+			const newBlogs = blogs.filter(element => element !== blog)
+			setBlogs(newBlogs)
+		}
+	}
+
+
+	const handleBlogLike = async blog => {
+		blog.likes += 1
+		await blogService.update(blog)
+		const newBlogs = blogs.map(e => e.id === blog.id ? { ...e, likes: blog.likes } : e)
+		setBlogs(sortByLikes(newBlogs))
+	}
+
+
 	return (
 		<div>
 			<h2>Blogs</h2>
 			<Notification message={notificationMessage} successful={notificationStatus} />
 
-			{user === null ?
-				loginForm() :
+			{user === null
+				?
+				<LoginForm
+					handleSubmit={handleLogin}
+					username={username}
+					password={password}
+					handleUsernameChange={handleUsernameChange}
+					handlePasswordChange={handlePasswordChange}
+				/>
+				:
 				<div>
 					<p>
 						Logged in as {user.name}
 						<button type="submit" onClick={handleLogout}>logout</button>
 					</p>
-
-					<BlogForm onBlogSubmitted={addBlog} />
+					<Togglable primaryButtonLabel='Add new blog' secondaryButtonLabel='Cancel' ref={blogFormRef} secondaryButtonUp={false}>
+						<BlogForm onBlogSubmit={handleBlogAdd} />
+					</Togglable>
+					<br/>
 
 					{blogs.map(blog =>
-						<Blog key={blog.id} blog={blog} />
+						<div key={blog.id}>
+							<Blog blog={blog} onLike={handleBlogLike} onDelete={handleBlogDelete} currentUser={user}/>
+						</div>
 					)}
 				</div>
 			}
@@ -138,3 +162,5 @@ const App = () => {
 }
 
 export default App
+
+

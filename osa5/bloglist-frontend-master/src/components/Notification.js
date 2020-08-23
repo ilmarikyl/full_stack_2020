@@ -9,4 +9,5 @@ const Notification = ({ message, successful }) => {
 	return <div className={status}> {message} </div>
 }
 
+
 export default Notification

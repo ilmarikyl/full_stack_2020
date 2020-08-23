@@ -1,9 +1,11 @@
-{
+module.exports = {
     "env": {
         "browser": true,
-        "es2020": true
+        "es6": true,
+		"jest/globals": true,
+		"cypress/globals": true
     },
-    "extends": [
+    "extends": [ 
         "eslint:recommended",
         "plugin:react/recommended"
     ],
@@ -11,13 +13,12 @@
         "ecmaFeatures": {
             "jsx": true
         },
-        "ecmaVersion": 11,
+        "ecmaVersion": 2018,
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react", "jest", "cypress"
     ],
-    "parser": "babel-eslint",
     "rules": {
         "indent": [
             "error",
@@ -39,8 +40,7 @@
         "arrow-spacing": [
             "error", { "before": true, "after": true }
         ],
-        
-        "no-console": 0
-        }
-      
-}
+        "no-console": 0,
+        "react/prop-types": 0
+    }
+  }

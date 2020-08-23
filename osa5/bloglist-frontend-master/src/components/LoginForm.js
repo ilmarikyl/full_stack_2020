@@ -1,52 +1,50 @@
-import React, { useState } from 'react'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import React from 'react'
+import PropTypes from 'prop-types'
 
-const [username, setUsername] = useState('')
-const [password, setPassword] = useState('')
 
-const LoginForm = () => (
-	<form onSubmit={handleLogin}>
+const LoginForm = ({
+	handleSubmit,
+	handleUsernameChange,
+	handlePasswordChange,
+	username,
+	password
+}) => {
+	return (
 		<div>
-        username
-			<input
-				type="text"
-				value={username}
-				name="Username"
-				onChange={({ target }) => setUsername(target.value)}
-			/>
-		</div>
-		<div>
-        password
-			<input
-				type="password"
-				value={password}
-				name="Password"
-				onChange={({ target }) => setPassword(target.value)}
-			/>
-		</div>
-		<button type="submit">login</button>
-	</form>
-)
+			<h2>Login</h2>
 
-const handleLogin = async (event) => {
-	event.preventDefault()
-	try {
-		const user = await loginService.login({
-			username, password,
-		})
+			<form onSubmit={handleSubmit}>
+				<div>
+          username
+					<input
+						id='username-field'
+						value={username}
+						onChange={handleUsernameChange}
+					/>
+				</div>
+				<div>
+          password
+					<input
+						id='password-field'
+						type="password"
+						value={password}
+						onChange={handlePasswordChange}
+					/>
+				</div>
+				<button id='login-button' type="submit">Login</button>
+			</form>
+		</div>
+	)
+}
 
-		window.localStorage.setItem(
-			'loggedBlogAppUser', JSON.stringify(user)
-		)
-		blogService.setToken(user.token)
-		setUser(user)
-		setUsername('')
-		setPassword('')
-		CreateNotification('Login successful', true, 3000)
-	} catch (exception) {
-		CreateNotification('Invalid username or password', false, 3000)
-	}
+
+LoginForm.propTypes = {
+	handleSubmit: PropTypes.func.isRequired,
+	handlePasswordChange: PropTypes.func.isRequired,
+	handleUsernameChange: PropTypes.func.isRequired,
+	username: PropTypes.string.isRequired,
+	password: PropTypes.string.isRequired
 }
 
 export default LoginForm
+
