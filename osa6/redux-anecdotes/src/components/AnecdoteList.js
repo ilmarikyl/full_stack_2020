@@ -9,8 +9,6 @@ const AnecdoteList = () => {
 		return state.anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(state.filter.toLowerCase()))
 	})
 
-	// anecdotes = anecdotes.filter(anecdote => anecdote.content.toLowerCase().includes(state.filter.toLowerCase()))
-
 	const voteAnecdote = (id) => {
 		const votedAnecdote = anecdotes.find(n => n.id === id)
 		dispatch(createVote(id))
