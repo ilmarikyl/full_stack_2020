@@ -13,10 +13,6 @@ import anecdoteService from '../services/anecdotes'
 // const initialState = anecdotesAtStart.map(asObject)
 // const getId = () => (100000 * Math.random()).toFixed(0)
 
-const sortByVotes = (anecdotes) => (
-	anecdotes.sort((a, b) =>  b.votes - a.votes)
-)
-
 // Ei enää tarpeellinen
 // const asObject = (anecdote) => {
 // 	return {
@@ -25,6 +21,11 @@ const sortByVotes = (anecdotes) => (
 // 		votes: 0
 // 	}
 // }
+
+const sortByVotes = (anecdotes) => (
+	anecdotes.sort((a, b) =>  b.votes - a.votes)
+)
+
 
 export const initializeAnecdotes = () => {
 	return async dispatch => {
@@ -35,6 +36,7 @@ export const initializeAnecdotes = () => {
 		})
 	}
 }
+
 
 export const createVote = (id) => {
 	return async dispatch => {
@@ -50,6 +52,7 @@ export const createVote = (id) => {
 	}
 }
 
+
 export const addAnecdote = (content) => {
 	return async dispatch => {
 		const newAnecdote = await anecdoteService.createNew(content)
@@ -63,8 +66,6 @@ export const addAnecdote = (content) => {
 
 
 const anecdoteReducer = (state = [], action) => {
-	// console.log('state now: ', state)
-	// console.log('action', action)
 
 	switch(action.type) {
 
@@ -73,11 +74,9 @@ const anecdoteReducer = (state = [], action) => {
 
 	case 'VOTE': {
 		const changedAnecdote = action.data
-
 		const newAnecdotes = state.map(anecdote =>
 			anecdote.id !== changedAnecdote.id ? anecdote : changedAnecdote
 		)
-
 		return sortByVotes(newAnecdotes)
 	}
 

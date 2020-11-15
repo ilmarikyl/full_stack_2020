@@ -12,15 +12,15 @@ export const setNotification = (text, time) => {
 	}
 }
 
+
 export const clearNotification = () => {
 	return {
 		type: 'CLEAR_MESSAGE'
 	}
 }
 
+
 const notificationReducer = (state = { text: '', timer: null }, action) => {
-	// console.log('state now: ', state)
-	// console.log('action', action)
 
 	switch(action.type) {
 
@@ -28,7 +28,6 @@ const notificationReducer = (state = { text: '', timer: null }, action) => {
 		if (state.timer !== null) {
 			clearTimeout(state.timer)
 		}
-
 		return { text: action.data.text, timer: action.data.timer }
 	}
 
@@ -39,7 +38,7 @@ const notificationReducer = (state = { text: '', timer: null }, action) => {
 	default:
 		return state
 	}
-
 }
+
 
 export default notificationReducer
