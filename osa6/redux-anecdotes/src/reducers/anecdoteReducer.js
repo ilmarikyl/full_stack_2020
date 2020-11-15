@@ -1,3 +1,5 @@
+import anecdoteService from '../services/anecdotes'
+
 // Nämä ei enää käytössä, kun json-server lisättiin
 // const anecdotesAtStart = [
 // 	'If it hurts, do it more often',
@@ -9,42 +11,55 @@
 // ]
 
 // const initialState = anecdotesAtStart.map(asObject)
-
-const getId = () => (100000 * Math.random()).toFixed(0)
+// const getId = () => (100000 * Math.random()).toFixed(0)
 
 const sortByVotes = (anecdotes) => (
 	anecdotes.sort((a, b) =>  b.votes - a.votes)
 )
 
-const asObject = (anecdote) => {
-	return {
-		content: anecdote,
-		id: getId(),
-		votes: 0
-	}
-}
+// Ei enää tarpeellinen
+// const asObject = (anecdote) => {
+// 	return {
+// 		content: anecdote,
+// 		id: getId(),
+// 		votes: 0
+// 	}
+// }
 
-export const initializeAnecdotes = (anecdotes) => {
-	return {
-		type: 'INIT_ANECDOTES',
-		data: anecdotes,
+export const initializeAnecdotes = () => {
+	return async dispatch => {
+		const anecdotes = await anecdoteService.getAll()
+		dispatch({
+			type: 'INIT_ANECDOTES',
+			data: anecdotes,
+		})
 	}
 }
 
 export const createVote = (id) => {
-	return {
-		type: 'VOTE',
-		data: { id }
+	return async dispatch => {
+
+		const oldAnecdote = await anecdoteService.getOne(id)
+		const changedAnecdote = { ...oldAnecdote, votes: oldAnecdote.votes + 1 }
+		await anecdoteService.vote(changedAnecdote)
+
+		dispatch({
+			type: 'VOTE',
+			data: changedAnecdote
+		})
 	}
 }
 
 export const addAnecdote = (content) => {
-	return {
-		type: 'NEW_ANECDOTE',
-		data: content,
+	return async dispatch => {
+		const newAnecdote = await anecdoteService.createNew(content)
+		dispatch({
+			type: 'NEW_ANECDOTE',
+			data: newAnecdote,
+		})
+
 	}
 }
-
 
 
 const anecdoteReducer = (state = [], action) => {
@@ -54,19 +69,15 @@ const anecdoteReducer = (state = [], action) => {
 	switch(action.type) {
 
 	case 'INIT_ANECDOTES':
-		return action.data
+		return sortByVotes(action.data)
 
 	case 'VOTE': {
-		const id = action.data.id
-		const anecdoteToChange = state.find(n => n.id === id)
-		const changedAnecdote = {
-			...anecdoteToChange,
-			votes: anecdoteToChange.votes + 1
-		}
+		const changedAnecdote = action.data
 
 		const newAnecdotes = state.map(anecdote =>
-			anecdote.id !== id ? anecdote : changedAnecdote
+			anecdote.id !== changedAnecdote.id ? anecdote : changedAnecdote
 		)
+
 		return sortByVotes(newAnecdotes)
 	}
 

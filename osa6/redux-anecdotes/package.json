@@ -12,10 +12,11 @@
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
     "react-scripts": "3.3.1",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
-	"server": "json-server -p3001 --watch db.json",
+    "server": "json-server -p3001 --watch db.json",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
