@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useField } from './hooks'
 
 import {
 	BrowserRouter as Router,
@@ -65,7 +66,7 @@ const About = () => (
 )
 
 const Footer = () => (
-	<div>
+	<div style={{backgroundColor: '#ECECEC'}}>
     Anecdote app for <a href='https://courses.helsinki.fi/fi/tkt21009'>Full Stack -websovelluskehitys</a>.
 
     See <a href='https://github.com/fullstack-hy2020/routed-anecdotes/blob/master/src/App.js'>https://github.com/fullstack-hy2019/routed-anecdotes/blob/master/src/App.js</a> for the source code.
@@ -73,43 +74,56 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-	const [content, setContent] = useState('')
-	const [author, setAuthor] = useState('')
-	const [info, setInfo] = useState('')
+	// const [content, setContent] = useState('')
+	// const [author, setAuthor] = useState('')
+	// const [info, setInfo] = useState('')
 
-	const history = useHistory()
+	const { reset: resetContent, ...content } = useField('text')
+	const { reset: resetAuthor, ...author } = useField('text')
+	const { reset: resetInfo, ...info } = useField('text')
+
 
 	const handleSubmit = (e) => {
 
 		e.preventDefault()
 		props.addNew({
-			content,
-			author,
-			info,
+			content: content.value,
+			author: author.value,
+			info: info.value,
 			votes: 0
 		})
-		history.push('/')
+	}
+
+	const resetForm = () => {
+		resetContent()
+		resetAuthor()
+		resetInfo()
 	}
 
 	return (
 		<div>
-			<h2>create a new anecdote</h2>
+			<h2>Create a new anecdote</h2>
 			<form onSubmit={handleSubmit}>
 				<div>
-          content
-					<input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+           content
+					{/* <input name='content' value={content} onChange={(e) => setContent(e.target.value)} /> */}
+					<input {...content}></input>
 				</div>
 				<div>
-          author
-					<input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+           author
+					{/* <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} /> */}
+					<input {...author}></input>
+
 				</div>
 				<div>
-          url for more info
-					<input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
+            url for more info
+					{/* <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} /> */}
+					<input {...info}></input>
+
 				</div>
 				<button>create</button>
-
 			</form>
+			<button onClick={resetForm} >reset</button>
 		</div>
 	)
 
@@ -119,7 +133,13 @@ const Notification = ( { text } ) => {
 
 	return (
 		text
-			? <div style={{ 'border': '2px solid', 'border-color': 'green' }}>{text}</div>
+			? <div
+				style={{
+					'border': '2px solid',
+					'borderColor': 'green'
+				}}>
+				{text}
+			</div>
 			: null
 	)
 }
@@ -127,6 +147,8 @@ const Notification = ( { text } ) => {
 
 
 const App = () => {
+	const history = useHistory()
+
 	const [anecdotes, setAnecdotes] = useState([
 		{
 			content: 'If it hurts, do it more often',
@@ -154,6 +176,8 @@ const App = () => {
 		setTimeout(() => {
 			setNotification('')
 		}, 10000)
+
+		history.push('/')
 	}
 
 
