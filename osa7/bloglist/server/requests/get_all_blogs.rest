@@ -1,0 +1,3 @@
+# GET http://localhost:3001/api/blogs/5f2806e3cc58283d50b54889
+
+GET http://localhost:3001/api/blogs/

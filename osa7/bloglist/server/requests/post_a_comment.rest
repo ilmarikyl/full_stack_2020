@@ -1,0 +1,7 @@
+POST http://localhost:3001/api/blogs/5fe0e99fd28a3746248b80d1/comments
+Content-Type: application/json
+Authorization: <INSERT TOKEN>
+
+{
+    "content": "Tämä on kommentti."
+}

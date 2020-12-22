@@ -1,0 +1,36 @@
+
+a {
+	color: rgb(181, 7, 68);
+}
+
+a:hover {
+	color: rgb(247, 210, 3);
+}
+
+body {
+	margin: 1;
+	font-family: 'Comfortaa', 'Segoe UI', 'Roboto', 'Oxygen',
+	  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+	  sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+  }
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+h1, h2 {
+	font-family: "Roboto Slab", sans-serif;
+	margin: 10px;
+}
+
+Button {
+	font-family: "Francois One", sans-serif;
+}
+
+.comment-section, .blogform {
+	background-color: #f5f6f7;
+}
+  
